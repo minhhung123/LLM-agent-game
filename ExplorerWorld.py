@@ -39,7 +39,7 @@ class ExplorerWorld:
         :param stamina:
         :return:
         """
-        if x >=0 and y >= 0:
+        if x is not None and y is not None:
             assert x < self.map_size and y < self.map_size
         else:
             x = random.randint(0, self.map_size - 1)

@@ -57,7 +57,7 @@ class ExplorerAgent:
 
     def reset(self):
         self.message_history = [
-            SystemMessage(content=self.docs),
+            SystemMessage(content=""),
         ]
         self.retry_times = 3
         
@@ -207,13 +207,14 @@ class ExplorerAgent:
         
         _output = self.chat_model(self.message_history)
         json_string = _output.content.split("```json")[-1].strip().replace('```', '')
+        print("JSON String:", json_string) 
         output = json.loads(json_string)
         self.check_response_format(output)
         
-        return output
+        return surroundings, stamina, wealth,output
             
     def take_action(self, world, print_all=True):
-        output = self._act(world)
+        surroundings, stamina, wealth,output = self._act(world)
         action_parts = output['Action']
         action_parts = action_parts.lower().strip().replace(".", "")
         
