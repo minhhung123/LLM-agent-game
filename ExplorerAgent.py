@@ -1,5 +1,11 @@
 import os
 import json
+import openai
+import ExplorerWorld as ew
+from TestingLayer import TestingLayer
+import logging, os
+from logging.handlers import RotatingFileHandler
+from datetime import datetime
 import random
 import logging
 from datetime import datetime
@@ -210,6 +216,13 @@ class ExplorerAgent:
         output = self._act(world)
         action_parts = output['Action']
         action_parts = action_parts.lower().strip().replace(".", "")
+        
+        condition = [surroundings, stamina, wealth] # TODO: abstract into an object?
+        decision = [condition, action_parts]
+
+        # Track and evaluate the action taken by the agent
+        testing_layer.evaluate_action(self.name, decision)
+        testing_layer.print_reasonable_action_counts()
 
         try:
             print(self.name, "choose to: ", action_parts)
@@ -247,8 +260,10 @@ class ExplorerAgent:
                 print("HALT due to retry times reached {}.".format(self.retry_times))
                 raise e
 
+
+
 if __name__ == "__main__":
-    random.seed(123)
+    random.seed(721)
     world_size = 7
     world = ew.ExplorerWorld(world_size)
     world.random_initialize_map(wealth_density=0.3)
@@ -261,6 +276,7 @@ if __name__ == "__main__":
                        principles='You are a weird person that does not want to attack or defense. You are afraid of death.')
 
     agent_dict = {"Alice": a1, "Bob": a2, "Charlie": a3}
+    testing_layer = TestingLayer(world, agent_dict)
 
     for i in range(5):
         print("*" * 25, "Turn", i, "Start", "*" * 25)
@@ -273,3 +289,7 @@ if __name__ == "__main__":
             print("\n" * 2)
         print("*" * 25, "Turn", i, "End", "*" * 25)
         print("\n" * 10)
+    testing_layer.print_reasonable_action_counts()  # Print the final reasonable action counts for each agent
+
+
+

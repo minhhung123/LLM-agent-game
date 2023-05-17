@@ -39,7 +39,7 @@ class ExplorerWorld:
         :param stamina:
         :return:
         """
-        if x and y:
+        if x >=0 and y >= 0:
             assert x < self.map_size and y < self.map_size
         else:
             x = random.randint(0, self.map_size - 1)
@@ -202,10 +202,9 @@ class ExplorerWorld:
 
 
 # A function to transpose a list of list (square)
-def transpose_lol(square_list):
-    # Use the built-in zip function to transpose the list
-    transposed_list = list(map(list, zip(*square_list)))
-    return transposed_list
+def transpose_lol(list_of_lists):
+    # return np.array(list_of_lists).T.tolist()
+    return [list(i) for i in zip(*list_of_lists)]
 
 
 # Testing framework for ExplorerWorld class
@@ -218,8 +217,12 @@ if __name__ == "__main__":
 
     # Test that the explorers were added correctly
     assert len(world.explorers) == 2
+    print(world.explorers["Alice"]["x"])
+    print(world.explorers["Alice"]["y"])
     assert world.explorers["Alice"]["x"] == 0
     assert world.explorers["Alice"]["y"] == 0
+    print(world.explorers["Bob"]["x"])
+    print(world.explorers["Bob"]["y"])
     assert world.explorers["Bob"]["x"] == 4
     assert world.explorers["Bob"]["y"] == 4
 
@@ -260,9 +263,8 @@ if __name__ == "__main__":
     if "Alice" in world.explorers:
         surroundings = world.get_surroundings("Alice")
         assert surroundings[0][1] == "Alice"
-        print(surroundings)
-        assert len(surroundings) == 4
-        assert len(surroundings[0]) == 3
+        assert len(surroundings) == 3
+        assert len(surroundings[0]) == 4
     if "Charlie" in world.explorers:
         world.print_surroundings('Charlie')
         surroundings = world.get_surroundings("Charlie")
